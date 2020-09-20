@@ -7,19 +7,19 @@ const app = new Koa()
 const router = new Router()
 
 // 使用cors处理options跨域问题
-app.use(cors());
+app.use(cors(config.corsOptions || ''))
 // 使用router处理api路由
 app.use(router.routes())
 // 使用bodyparser解析get,post的参数
 app.use(bodyParser())
 
 // mock api
-const helloData = require('./src/hello.js')
-router.get('/api/v1/hello', async(ctx, next) => {
-  ctx.body = helloData
-  await next()
-  console.log('mock result: ' + JSON.stringify(helloData))
-})
+const mockControl = require('./src/control/mock.js')
+// info api
+const InfoControl = require('./src/control/info.js')
+
+router.get('/api/v1/mock', mockControl)
+router.get('/api/v1/info', InfoControl)
 
 // log error
 app.on('error', (err, ctx) => {
